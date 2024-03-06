@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
+
+import FriendMarker from '../../components/FriendMarker';
 
 import { friends } from '../../data';
 
@@ -109,30 +117,22 @@ export default function App() {
           strokeColor="rgba(0, 0, 255, 0.5)"
         />
         {nearbyFriends.map((friend) => {
-          return (
-            <Marker
-              key={friend.name}
-              coordinate={{
-                latitude: friend.location.latitude,
-                longitude: friend.location.longitude,
-              }}
-            />
-          );
+          return <FriendMarker friend={friend} />;
         })}
       </MapView>
       <View style={styles.radiusButtonContainer}>
-        <Pressable
+        <TouchableOpacity
           style={styles.radiusButtonLeft}
           onPress={() => adjustRadius('decrease')}
         >
           <Text style={styles.radiusButtonText}>-</Text>
-        </Pressable>
-        <Pressable
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.radiusButtonRight}
           onPress={() => adjustRadius('increase')}
         >
           <Text style={styles.radiusButtonText}>+</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <StatusBar style="auto" hidden={true} />
     </View>

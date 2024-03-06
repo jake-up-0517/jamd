@@ -1,9 +1,9 @@
 import { View, Text, Button } from 'react-native';
 
-export default function Chat() {
+export default function ChatHome() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Chat</Text>
+      <Text>Main Chat Screen</Text>
     </View>
   );
 }
