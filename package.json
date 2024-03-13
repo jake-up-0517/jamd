@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "expo": "~50.0.8",
     "expo-constants": "~15.4.5",
     "expo-device": "~5.9.3",
@@ -28,6 +29,8 @@
     "react-native-maps": "1.10.0",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.7.4",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

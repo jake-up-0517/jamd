@@ -109,18 +109,25 @@ export default function App() {
     }
   }
 
+  if (!location) {
+    return (
+      <View style={styles.container}>
+        <Text>Finding user location...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         showsUserLocation={true}
         initialRegion={{
-          latitude: location ? location.coords.latitude : 37.78825,
-          longitude: location ? location.coords.longitude : -122.4324,
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        followsUserLocation={true}
       >
         <Circle
           center={{
