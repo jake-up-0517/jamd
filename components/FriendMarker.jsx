@@ -3,19 +3,20 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link, router } from 'expo-router';
 
 export default function FriendMarker({ friend }) {
+  const fullName = `${friend.first_name} ${friend.last_name}`;
   return (
     <Marker
-      key={friend.name}
+      key={friend.last_name}
       coordinate={{
-        latitude: friend.location.latitude,
-        longitude: friend.location.longitude,
+        latitude: friend.latitude,
+        longitude: friend.longitude,
       }}
-      title={friend.name}
+      title={fullName}
     >
       <Callout>
         <View style={styles.callout}>
-          <Text style={styles.calloutText}>{friend.name}</Text>
-          <Link push href={`/${friend.name}`} asChild>
+          <Text style={styles.calloutText}>{fullName}</Text>
+          <Link push href={`/${fullName}`} asChild>
             <TouchableOpacity
               onPress={() => console.log('callout button pressed')}
               style={styles.calloutButton}

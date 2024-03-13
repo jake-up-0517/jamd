@@ -8,7 +8,7 @@ export default function ChatUser() {
 
   useEffect(() => {
     navigation.setOptions({ title: local.user });
-  });
+  }, []);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
