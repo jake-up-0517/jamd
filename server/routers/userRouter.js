@@ -12,4 +12,12 @@ userRouter.post('/signup', userController.signUp, (req, res) => {
   res.status(200).json(res.locals.email);
 });
 
+userRouter.post(
+  '/updatelocation',
+  userController.updateLocation,
+  (req, res) => {
+    res.status(200).json('Location updated!');
+  }
+);
+
 export default userRouter;

@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import MapView, { Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 import FriendMarker from '../../components/FriendMarker';
+import { UserContext } from '../../context/UserContext';
 
-export default function App() {
+export default function Map() {
+  const [firstName, setFirstName] = useState('');
   const [location, setLocation] = useState(null);
   const [radius, setRadius] = useState(1609);
   const [allFriends, setAllFriends] = useState([]);
   const [nearbyFriends, setNearbyFriends] = useState([]);
+  const { username } = useContext(UserContext);
 
   //get all friends and watch user location
   useEffect(() => {
     getAllFriends();
+    const firstName = username.split(' ')[0];
+    setFirstName(firstName);
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -23,6 +28,11 @@ export default function App() {
       }
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      updateLocation(
+        location.coords.latitude,
+        location.coords.longitude,
+        firstName
+      );
       await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
@@ -31,6 +41,11 @@ export default function App() {
         },
         (location) => {
           setLocation(location);
+          updateLocation(
+            location.coords.latitude,
+            location.coords.longitude,
+            firstName
+          );
           // console.log(location);
         }
       );
@@ -40,9 +55,36 @@ export default function App() {
   //find nearby friends on location or radius change
   useEffect(() => {
     if (location) {
+      updateLocation(
+        location.coords.latitude,
+        location.coords.longitude,
+        firstName
+      );
       findNearbyFriends();
     }
   }, [radius, location]);
+
+  const updateLocation = async (latitude, longitude, firstName) => {
+    try {
+      const response = await fetch(
+        'http://192.168.1.169:3000/api/users/updatelocation',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ latitude, longitude, firstName }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        return;
+      }
+    } catch (err) {
+      console.log('Error:', err);
+    }
+  };
 
   const getAllFriends = async () => {
     try {
