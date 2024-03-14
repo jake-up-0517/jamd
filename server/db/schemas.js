@@ -1,3 +1,6 @@
+import mongoose from 'mongoose';
+
+//sqlite schemas
 export const USERS_TABLE_SCHEMA = `
   CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,3 +19,18 @@ export const FRIENDS_TABLE_SCHEMA = `
     FOREIGN KEY (user_id1) REFERENCES users (id),
     FOREIGN KEY (user_id2) REFERENCES users (id)
   );`;
+
+//Mongo schemas
+const MessageSchema = new mongoose.Schema({
+  sender: String,
+  receiver: String,
+  message: String,
+  time: Number,
+  expiresAt: {
+    type: Date,
+    default: new Date(),
+    expires: 86400,
+  },
+});
+
+export const Message = mongoose.model('Message', MessageSchema);
