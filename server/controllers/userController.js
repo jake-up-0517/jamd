@@ -5,26 +5,43 @@ const userController = {
   signIn: async (req, res, next) => {
     const { email } = req.body;
     console.log('email: ', email);
-    res.locals.email = email;
+    try {
+      res.locals.name = await new Promise((resolve, reject) => {
+        db.all(
+          'SELECT first_name FROM users WHERE email = ?',
+          [email],
+          (err, rows) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(rows[0].first_name);
+          }
+        );
+      });
+    } catch (err) {
+      console.log(err);
+    }
     return next();
   },
   signUp: async (req, res, next) => {
     const { firstName, lastName, email } = req.body;
     try {
-      await db.run(USERS_TABLE_SCHEMA);
-      await db.run(
-        `INSERT INTO users (first_name, last_name, email) VALUES (?, ?, ?)`,
-        [firstName, lastName, email]
-      );
-      await db.all(
-        'SELECT * FROM users ORDER BY id DESC LIMIT 1',
-        (err, rows) => {
-          if (err) {
-            throw err;
+      res.locals.name = await new Promise((resolve, reject) => {
+        db.run(
+          `INSERT INTO users (first_name, last_name, email) VALUES (?, ?, ?)`,
+          [firstName, lastName, email]
+        );
+        db.all(
+          'SELECT first_name FROM users WHERE email = ?',
+          [email],
+          (err, rows) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(rows[0].first_name);
           }
-          console.log(rows);
-        }
-      );
+        );
+      });
     } catch (err) {
       console.log(err);
     }

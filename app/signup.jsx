@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState, useContext } from 'react';
 import {
   View,
@@ -16,21 +16,23 @@ import { auth } from '../firebaseConfig';
 export default function Login() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [error, setError] = useState(null);
   const { setUsername } = useContext(UserContext);
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
       if (auth.currentUser) {
         const response = await fetch(
-          'http://192.168.1.169:3000/api/users/signin',
+          'http://192.168.1.169:3000/api/users/signup',
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ firstName, lastName, email }),
           }
         );
         const data = await response.json();
@@ -39,14 +41,34 @@ export default function Login() {
         router.replace('/(tabs)');
       }
     } catch (error) {
-      setError(true);
-      console.log('Error signing in: ', error);
+      // setError(true);
+      console.log('Error signing up: ', error);
     }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <TextInput
+          style={{
+            height: 40,
+            width: 100,
+            borderColor: 'gray',
+            borderWidth: 1,
+          }}
+          onChangeText={setFirstName}
+          value={firstName}
+        />
+        <TextInput
+          style={{
+            height: 40,
+            width: 100,
+            borderColor: 'gray',
+            borderWidth: 1,
+          }}
+          onChangeText={setLastName}
+          value={lastName}
+        />
         <TextInput
           style={{
             height: 40,
@@ -67,16 +89,10 @@ export default function Login() {
           onChangeText={setPassword}
           value={password}
         />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.replace('/signup')}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-        {error && <Text style={styles.error}>Incorrect email or password</Text>}
+        {/* {error && <Text style={styles.error}>Incorrect email or password</Text>} */}
       </View>
     </TouchableWithoutFeedback>
   );

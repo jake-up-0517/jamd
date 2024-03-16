@@ -5,11 +5,11 @@ import userController from '../controllers/userController.js';
 const userRouter = express.Router();
 
 userRouter.post('/signin', userController.signIn, (req, res) => {
-  res.status(200).json(res.locals.email);
+  res.status(200).json(res.locals.name);
 });
 
 userRouter.post('/signup', userController.signUp, (req, res) => {
-  res.status(200).json(res.locals.email);
+  res.status(200).json(res.locals.name);
 });
 
 userRouter.post(
