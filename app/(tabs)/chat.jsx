@@ -6,7 +6,7 @@ export default function ChatHome() {
   const { username } = useContext(UserContext);
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Main Chat Screen for {username}</Text>
+      <Text>Main Chat Screen for {username[0]}</Text>
     </View>
   );
 }

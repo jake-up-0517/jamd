@@ -38,11 +38,14 @@ const styles = StyleSheet.create({
   },
   calloutText: {
     fontSize: 20,
+    marginBottom: 10,
   },
   calloutButton: {
     backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
+    width: 100,
+    alignItems: 'center',
   },
   calloutButtonText: {
     color: 'white',

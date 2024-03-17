@@ -8,3 +8,7 @@ export default function Root() {
     </UserProvider>
   );
 }
+
+// export const unstable_settings = {
+//   initialRouteName: 'index',
+// };

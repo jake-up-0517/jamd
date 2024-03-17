@@ -18,7 +18,7 @@ export default function Map() {
   //get all friends and watch user location
   useEffect(() => {
     getAllFriends();
-    const firstName = username.split(' ')[0];
+    const firstName = username[0];
     setFirstName(firstName);
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();

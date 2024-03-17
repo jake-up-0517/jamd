@@ -8,13 +8,13 @@ const userController = {
     try {
       res.locals.name = await new Promise((resolve, reject) => {
         db.all(
-          'SELECT first_name FROM users WHERE email = ?',
+          'SELECT first_name, last_name FROM users WHERE email = ?',
           [email],
           (err, rows) => {
             if (err) {
               reject(err);
             }
-            resolve(rows[0].first_name);
+            resolve([rows[0].first_name, rows[0].last_name]);
           }
         );
       });

@@ -10,7 +10,7 @@ const messagesController = {
           { sender: receiver, receiver: sender },
         ],
       }).sort({ time: 1 });
-      // console.log('get all messages', messages);
+      console.log(messages);
       res.locals.messages = messages;
     } catch (err) {
       console.log(err);

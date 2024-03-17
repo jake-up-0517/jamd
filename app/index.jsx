@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { router } from 'expo-router';
 import { UserContext } from '../context/UserContext';
@@ -46,38 +47,38 @@ export default function Login() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <Text style={styles.title}>Jamd</Text>
         <TextInput
-          style={{
-            height: 40,
-            width: 100,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
+          style={styles.textBox}
           onChangeText={setEmail}
           value={email}
+          autoCapitalize="none"
+          autoComplete="email"
+          placeholder="Email"
+          placeholderTextColor={'#000'}
         />
         <TextInput
-          style={{
-            height: 40,
-            width: 100,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
+          style={styles.textBox}
           onChangeText={setPassword}
           value={password}
+          autoCapitalize="none"
+          autoComplete="password"
+          secureTextEntry={true}
+          placeholder="Password"
+          placeholderTextColor={'#000'}
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.replace('/signup')}
+          onPress={() => router.push('/signup')}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
         {error && <Text style={styles.error}>Incorrect email or password</Text>}
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
@@ -90,9 +91,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'blue',
-    padding: 20,
+    padding: 10,
     borderRadius: 5,
+    margin: 10,
+    height: 60,
+    width: 200,
   },
   buttonText: {
     color: 'white',
@@ -101,5 +107,18 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     fontSize: 20,
+  },
+  textBox: {
+    height: 50,
+    width: 250,
+    borderColor: 'gray',
+    borderWidth: 2,
+    margin: 10,
+    borderRadius: 5,
+    paddingLeft: 10,
+  },
+  title: {
+    fontSize: 100,
+    margin: 20,
   },
 });

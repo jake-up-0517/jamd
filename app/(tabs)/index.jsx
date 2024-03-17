@@ -7,10 +7,12 @@ export default function Home() {
   const { username } = useContext(UserContext);
   return (
     <View style={styles.container}>
-      <Text>Hello {username}</Text>
+      <Text style={styles.title}>Hello {username[0]}</Text>
       <Link href="/map" asChild>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>See who's around</Text>
+          <Text style={styles.buttonText} numberOfLines={2}>
+            In a Jam?{'\n'}See who can help!
+          </Text>
         </TouchableOpacity>
       </Link>
     </View>
@@ -25,12 +27,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
     backgroundColor: 'blue',
     padding: 20,
     borderRadius: 5,
+    margin: 10,
+    width: 200,
   },
   buttonText: {
+    textAlign: 'center',
     color: 'white',
     fontSize: 20,
+  },
+  title: {
+    fontSize: 50,
+    margin: 20,
   },
 });

@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { router } from 'expo-router';
 import { UserContext } from '../context/UserContext';
@@ -48,52 +49,51 @@ export default function Login() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <Text style={styles.title}>Sign Up</Text>
         <TextInput
-          style={{
-            height: 40,
-            width: 100,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
+          style={styles.textBox}
           onChangeText={setFirstName}
           value={firstName}
+          placeholder="First Name"
+          placeholderTextColor={'#000'}
+          autoComplete="given-name"
         />
         <TextInput
-          style={{
-            height: 40,
-            width: 100,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
+          style={styles.textBox}
           onChangeText={setLastName}
           value={lastName}
+          placeholder="Last Name"
+          placeholderTextColor={'#000'}
+          autoComplete="family-name"
         />
         <TextInput
-          style={{
-            height: 40,
-            width: 100,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
+          style={styles.textBox}
           onChangeText={setEmail}
           value={email}
+          placeholder="Email"
+          placeholderTextColor={'#000'}
+          autoCapitalize="none"
+          autoComplete="email"
         />
         <TextInput
-          style={{
-            height: 40,
-            width: 100,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
+          style={styles.textBox}
           onChangeText={setPassword}
           value={password}
+          placeholder="Password"
+          placeholderTextColor={'#000'}
+          autoCapitalize="none"
+          autoComplete="password"
+          secureTextEntry={true}
         />
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+          <Text style={styles.buttonText}>Back to Login</Text>
+        </TouchableOpacity>
         {/* {error && <Text style={styles.error}>Incorrect email or password</Text>} */}
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
@@ -106,9 +106,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'blue',
-    padding: 20,
+    padding: 10,
     borderRadius: 5,
+    margin: 10,
+    height: 60,
+    width: 200,
   },
   buttonText: {
     color: 'white',
@@ -117,5 +122,18 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     fontSize: 20,
+  },
+  textBox: {
+    height: 50,
+    width: 250,
+    borderColor: 'gray',
+    borderWidth: 2,
+    margin: 10,
+    borderRadius: 5,
+    paddingLeft: 10,
+  },
+  title: {
+    fontSize: 75,
+    margin: 20,
   },
 });

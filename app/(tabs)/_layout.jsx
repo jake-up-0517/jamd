@@ -35,7 +35,7 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-      <Tabs.Screen name="[user]" options={{ href: null }} />
+      <Tabs.Screen name="[friend]" options={{ href: null }} />
     </Tabs>
   );
 }
