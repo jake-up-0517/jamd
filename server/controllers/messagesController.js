@@ -10,7 +10,7 @@ const messagesController = {
           { sender: receiver, receiver: sender },
         ],
       }).sort({ time: 1 });
-      console.log(messages);
+      // console.log(messages);
       res.locals.messages = messages;
     } catch (err) {
       console.log(err);
@@ -29,7 +29,7 @@ const messagesController = {
       });
       // console.log('new entry', newEntry);
       await newEntry.save();
-      console.log('Message saved');
+      // console.log('Message saved');
       res.locals.message = message;
     } catch (err) {
       console.log(err);

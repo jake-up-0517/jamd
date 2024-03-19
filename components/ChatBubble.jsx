@@ -22,9 +22,9 @@ export default function ChatBubble({ message, sender, index }) {
       >
         <Text style={{ fontSize: 16, color: '#fff' }}>{message}</Text>
 
-        <View style={styles.rightArrow}></View>
+        {/* <View style={styles.rightArrow}></View>
 
-        <View style={styles.rightArrowOverlap}></View>
+        <View style={styles.rightArrowOverlap}></View> */}
       </View>
     );
   }
@@ -52,8 +52,8 @@ export default function ChatBubble({ message, sender, index }) {
         {' '}
         {message}
       </Text>
-      <View style={styles.leftArrow}></View>
-      <View style={styles.leftArrowOverlap}></View>
+      {/* <View style={styles.leftArrow}></View>
+      <View style={styles.leftArrowOverlap}></View> */}
     </View>
   );
 }

@@ -15,6 +15,13 @@ export default function Home() {
           </Text>
         </TouchableOpacity>
       </Link>
+      <Link Link push href={`/Jarod Crawford`} asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText} numberOfLines={2}>
+            Chat
+          </Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }

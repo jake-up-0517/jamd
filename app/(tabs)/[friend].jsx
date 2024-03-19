@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,36 +10,56 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+
 import socket from '../../utils/socket';
 import ChatBubble from '../../components/ChatBubble';
-import { useContext } from 'react';
 import { UserContext } from '../../context/UserContext';
 
 export default function ChatUser() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
+
   const { username } = useContext(UserContext);
+
+  const flatListRef = useRef();
 
   const local = useLocalSearchParams();
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log('in use effect');
     navigation.setOptions({ title: local.friend });
-    getMessages();
-    setCurrentMessage('');
     socket.connect();
     socket.on('message', (message) => {
-      setMessages((prev) => [...prev, message.message]);
+      console.log('socket message:', message);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: `${username[0]} ${username[1]}`,
+          message: message.message,
+          time: message.time,
+        },
+      ]);
     });
+    getMessages();
+    setCurrentMessage('');
     return () => {
       socket.off('message');
       socket.disconnect();
     };
   }, [local.friend]);
 
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
+
   const getMessages = async () => {
+    console.log('getting messages');
     try {
       const response = await fetch(
         'http://192.168.1.169:3000/api/messages/getall',
@@ -58,9 +78,6 @@ export default function ChatUser() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const messages = await response.json();
-      // console.log('data:', data);
-      // const messages = data.map((message) => message.message);
-      // console.log('messages:', messages);
       setMessages(messages);
     } catch (err) {
       console.log('Error:', err);
@@ -95,42 +112,59 @@ export default function ChatUser() {
   };
 
   return (
-    <View
+    <KeyboardAvoidingView
       style={{
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // justifyContent: 'center',
+        // alignItems: 'center',
       }}
+      behavior="padding"
+      keyboardVerticalOffset={100}
     >
-      <FlatList
-        data={messages}
-        style={{ backgroundColor: '#eeeeee', width: '100%', marginBottom: 10 }}
-        renderItem={({ item, index }) => {
-          if (item.sender === `${username[0]} ${username[1]}`) {
-            console.log(item);
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          width: '100%',
+          marginBottom: 10,
+        }}
+      >
+        <FlatList
+          data={messages}
+          ref={flatListRef}
+          onContentSizeChange={() =>
+            flatListRef.current.scrollToEnd({ animated: false })
+          }
+          ListFooterComponent={<View style={{ height: 20 }}></View>}
+          // style={{
+          //   backgroundColor: 'white',
+          //   width: '100%',
+          //   marginBottom: 10,
+          // }}
+          renderItem={({ item, index }) => {
+            const id = item._id ? item._id.toString() : item.time.toString();
+            if (item.sender === `${username[0]} ${username[1]}`) {
+              return (
+                <ChatBubble
+                  sender="user"
+                  message={item.message}
+                  index={id}
+                  key={id}
+                />
+              );
+            }
             return (
               <ChatBubble
-                sender="user"
+                sender="friend"
                 message={item.message}
-                index={item._id}
-                key={item._id}
+                index={id}
+                key={id}
               />
             );
-          }
-          return (
-            <ChatBubble
-              sender="friend"
-              message={item.message}
-              index={item._id}
-              key={item._id}
-            />
-          );
-        }}
-        keyExtractor={(item) => {
-          return item._id;
-        }}
-        scrollEnabled={true}
-      ></FlatList>
+          }}
+          scrollEnabled={true}
+        />
+      </View>
       <KeyboardAvoidingView
         style={{
           width: '100%',
@@ -157,23 +191,12 @@ export default function ChatUser() {
             margin: 10,
           }}
           autoFocus={false}
-        />
-        {/* <TouchableOpacity
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'blue',
-            padding: 10,
-            borderRadius: 5,
-            margin: 10,
-            height: 60,
-            width: 200,
+          onFocus={() => {
+            setTimeout(() => {
+              flatListRef.current.scrollToEnd({ animated: true });
+            }, 100);
           }}
-          title="Send Message"
-          onPress={sendMessage}
-        >
-          <Text style={{ color: 'white', fontSize: 20 }}>Send Message</Text>
-        </TouchableOpacity> */}
+        />
         <Pressable
           style={{
             justifyContent: 'center',
@@ -192,6 +215,6 @@ export default function ChatUser() {
           <FontAwesome size={20} name="paper-plane" color={'white'} />
         </Pressable>
       </KeyboardAvoidingView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

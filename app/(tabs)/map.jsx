@@ -8,7 +8,6 @@ import FriendMarker from '../../components/FriendMarker';
 import { UserContext } from '../../context/UserContext';
 
 export default function Map() {
-  const [firstName, setFirstName] = useState('');
   const [location, setLocation] = useState(null);
   const [radius, setRadius] = useState(1609);
   const [allFriends, setAllFriends] = useState([]);
@@ -18,8 +17,6 @@ export default function Map() {
   //get all friends and watch user location
   useEffect(() => {
     getAllFriends();
-    const firstName = username[0];
-    setFirstName(firstName);
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -31,7 +28,7 @@ export default function Map() {
       updateLocation(
         location.coords.latitude,
         location.coords.longitude,
-        firstName
+        username[0]
       );
       await Location.watchPositionAsync(
         {
@@ -44,7 +41,7 @@ export default function Map() {
           updateLocation(
             location.coords.latitude,
             location.coords.longitude,
-            firstName
+            username[0]
           );
           // console.log(location);
         }
@@ -58,7 +55,7 @@ export default function Map() {
       updateLocation(
         location.coords.latitude,
         location.coords.longitude,
-        firstName
+        username[0]
       );
       findNearbyFriends();
     }
@@ -73,7 +70,7 @@ export default function Map() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ latitude, longitude, firstName }),
+          body: JSON.stringify({ latitude, longitude, firstName: username[0] }),
         }
       );
       if (!response.ok) {
@@ -91,16 +88,21 @@ export default function Map() {
       const response = await fetch(
         'http://192.168.1.169:3000/api/friends/getall',
         {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            firstName: username[0],
+            lastName: username[1],
+          }),
         }
       );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const friends = await response.json();
+      // console.log('get all friends:', friends);
       setAllFriends(friends);
     } catch (err) {
       console.log('Error:', err);
@@ -109,7 +111,7 @@ export default function Map() {
 
   const findNearbyFriends = () => {
     const nearbyFriends = [];
-    // console.log('finding nearby friends');
+    // console.log('find nearby allFriends', allFriends);
     allFriends.forEach((friend) => {
       let distance = getDistanceFromUser(
         location.coords.latitude,
@@ -121,6 +123,7 @@ export default function Map() {
         nearbyFriends.push(friend);
       }
     });
+    // console.log('nearbyFriends:', nearbyFriends);
     setNearbyFriends(nearbyFriends);
   };
 
@@ -181,7 +184,7 @@ export default function Map() {
           strokeColor="rgba(0, 0, 255, 0.5)"
         />
         {nearbyFriends.map((friend) => {
-          return <FriendMarker key={friend.id} friend={friend} />;
+          return <FriendMarker key={friend.first_name} friend={friend} />;
         })}
       </MapView>
       <View style={styles.radiusButtonContainer}>
