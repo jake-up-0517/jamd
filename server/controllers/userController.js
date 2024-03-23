@@ -48,16 +48,16 @@ const userController = {
     return next();
   },
   updateLocation: async (req, res, next) => {
-    const { latitude, longitude, firstName } = req.body;
+    const { latitude, longitude, email } = req.body;
     try {
       await db.run(USERS_TABLE_SCHEMA);
       await db.run(
-        `UPDATE users SET latitude = ?, longitude = ? WHERE first_name = ?`,
-        [latitude, longitude, firstName]
+        `UPDATE users SET latitude = ?, longitude = ? WHERE email = ?`,
+        [latitude, longitude, email]
       );
       await db.all(
-        'SELECT * FROM users WHERE first_name = ?',
-        [firstName],
+        'SELECT * FROM users WHERE email = ?',
+        [email],
         (err, rows) => {
           if (err) {
             throw err;
