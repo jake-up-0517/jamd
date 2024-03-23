@@ -1,12 +1,11 @@
 import { View, Text, Button } from 'react-native';
-import { useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
+import { useUserStore } from '../../store/store';
 
 export default function ChatHome() {
-  const { username } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Main Chat Screen for {username[0]}</Text>
+      <Text>Main Chat Screen for {user}</Text>
     </View>
   );
 }

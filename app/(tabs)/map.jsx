@@ -1,158 +1,23 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import MapView, { Circle } from 'react-native-maps';
-import * as Location from 'expo-location';
 
 import FriendMarker from '../../components/FriendMarker';
-import { UserContext } from '../../context/UserContext';
+import { useUserStore, useLocationStore } from '../../store/store';
+import { findNearbyFriends, adjustRadius } from '../../utils/helpers';
 
 export default function Map() {
-  const [location, setLocation] = useState(null);
-  const [radius, setRadius] = useState(1609);
-  const [allFriends, setAllFriends] = useState([]);
-  const [nearbyFriends, setNearbyFriends] = useState([]);
-  const { username } = useContext(UserContext);
+  const location = useLocationStore((state) => state.location);
+  const radius = useLocationStore((state) => state.radius);
+  const allFriends = useUserStore((state) => state.allFriends);
+  const nearbyFriends = useUserStore((state) => state.nearbyFriends);
+  const setRadius = useLocationStore((state) => state.setRadius);
 
-  //get all friends and watch user location
   useEffect(() => {
-    getAllFriends();
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      updateLocation(
-        location.coords.latitude,
-        location.coords.longitude,
-        username[0]
-      );
-      await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 1000,
-          distanceInterval: 1,
-        },
-        (location) => {
-          setLocation(location);
-          updateLocation(
-            location.coords.latitude,
-            location.coords.longitude,
-            username[0]
-          );
-          // console.log(location);
-        }
-      );
-    })();
-  }, []);
-
-  //find nearby friends on location or radius change
-  useEffect(() => {
-    if (location) {
-      updateLocation(
-        location.coords.latitude,
-        location.coords.longitude,
-        username[0]
-      );
-      findNearbyFriends();
-    }
-  }, [radius, location]);
-
-  const updateLocation = async (latitude, longitude, firstName) => {
-    try {
-      const response = await fetch(
-        'http://192.168.1.169:3000/api/users/updatelocation',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ latitude, longitude, firstName: username[0] }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      } else {
-        return;
-      }
-    } catch (err) {
-      console.log('Error:', err);
-    }
-  };
-
-  const getAllFriends = async () => {
-    try {
-      const response = await fetch(
-        'http://192.168.1.169:3000/api/friends/getall',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            firstName: username[0],
-            lastName: username[1],
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const friends = await response.json();
-      // console.log('get all friends:', friends);
-      setAllFriends(friends);
-    } catch (err) {
-      console.log('Error:', err);
-    }
-  };
-
-  const findNearbyFriends = () => {
-    const nearbyFriends = [];
-    // console.log('find nearby allFriends', allFriends);
-    allFriends.forEach((friend) => {
-      let distance = getDistanceFromUser(
-        location.coords.latitude,
-        location.coords.longitude,
-        friend.latitude,
-        friend.longitude
-      );
-      if (distance <= radius) {
-        nearbyFriends.push(friend);
-      }
-    });
-    // console.log('nearbyFriends:', nearbyFriends);
-    setNearbyFriends(nearbyFriends);
-  };
-
-  function getDistanceFromUser(lat1, lon1, lat2, lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = degToRad(lat2 - lat1);
-    var dLon = degToRad(lon2 - lon1);
-    var a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(degToRad(lat1)) *
-        Math.cos(degToRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c; // Distance in km
-    return d * 1000; // to meters
-  }
-
-  function degToRad(deg) {
-    return deg * (Math.PI / 180);
-  }
-
-  function adjustRadius(action) {
-    if (action === 'increase' && radius < 16093) {
-      setRadius(radius + 1609);
-    } else if (action === 'decrease' && radius > 1609) {
-      setRadius(radius - 1609);
-    }
-  }
+    console.log(radius);
+    findNearbyFriends(allFriends, location, radius);
+  }, [location, radius]);
 
   if (!location) {
     return (
@@ -190,13 +55,15 @@ export default function Map() {
       <View style={styles.radiusButtonContainer}>
         <TouchableOpacity
           style={styles.radiusButtonLeft}
-          onPress={() => adjustRadius('decrease')}
+          onPress={() => {
+            setRadius(adjustRadius('decrease', radius));
+          }}
         >
           <Text style={styles.radiusButtonText}>-</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.radiusButtonRight}
-          onPress={() => adjustRadius('increase')}
+          onPress={() => setRadius(adjustRadius('increase', radius))}
         >
           <Text style={styles.radiusButtonText}>+</Text>
         </TouchableOpacity>

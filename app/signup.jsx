@@ -1,7 +1,6 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import {
-  View,
   Text,
   TouchableOpacity,
   StyleSheet,
@@ -11,7 +10,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { router } from 'expo-router';
-import { UserContext } from '../context/UserContext';
+import { useUserStore } from '../store/store';
 import { auth } from '../firebaseConfig';
 
 export default function Login() {
@@ -20,7 +19,8 @@ export default function Login() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState(null);
-  const { setUsername } = useContext(UserContext);
+  const setUser = useUserStore((state) => state.setUser);
+  const setUserEmail = userUseStore((state) => state.setUserEmail);
 
   const handleSignUp = async () => {
     try {
@@ -38,7 +38,8 @@ export default function Login() {
         );
         const data = await response.json();
         console.log('name', data);
-        setUsername(data);
+        setUser(data[0] + ' ' + data[1]);
+        setUserEmail(email);
         router.replace('/(tabs)');
       }
     } catch (error) {

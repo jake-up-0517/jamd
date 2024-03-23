@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,19 +10,18 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import socket from '../../utils/socket';
 import ChatBubble from '../../components/ChatBubble';
-import { UserContext } from '../../context/UserContext';
+import { useUserStore } from '../../store/store';
 
 export default function ChatUser() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
 
-  const { username } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
 
   const flatListRef = useRef();
 
@@ -38,7 +37,7 @@ export default function ChatUser() {
       setMessages((prev) => [
         ...prev,
         {
-          sender: `${username[0]} ${username[1]}`,
+          sender: `${user}`,
           message: message.message,
           time: message.time,
         },
@@ -69,7 +68,7 @@ export default function ChatUser() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sender: `${username[0]} ${username[1]}`,
+            sender: `${user}`,
             receiver: local.friend,
           }),
         }
@@ -86,7 +85,7 @@ export default function ChatUser() {
 
   const sendMessage = async () => {
     message = {
-      sender: `${username[0]} ${username[1]}`,
+      sender: `${user}`,
       receiver: local.friend,
       message: currentMessage,
       time: Date.now(),
@@ -143,7 +142,7 @@ export default function ChatUser() {
           // }}
           renderItem={({ item, index }) => {
             const id = item._id ? item._id.toString() : item.time.toString();
-            if (item.sender === `${username[0]} ${username[1]}`) {
+            if (item.sender === `${user}`) {
               return (
                 <ChatBubble
                   sender="user"

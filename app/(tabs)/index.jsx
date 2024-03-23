@@ -1,13 +1,36 @@
+import { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
+import { useUserStore, useLocationStore } from '../../store/store';
+import {
+  getLocation,
+  getAllFriends,
+  findNearbyFriends,
+} from '../../utils/helpers';
 
 export default function Home() {
-  const { username } = useContext(UserContext);
+  const user = useUserStore((state) => state.user);
+  const email = useUserStore((state) => state.email);
+  const radius = useLocationStore((state) => state.radius);
+  const nearbyFriends = useUserStore((state) => state.nearbyFriends);
+  const setLocation = useLocationStore((state) => state.setLocation);
+  const setAllFriends = useUserStore((state) => state.setAllFriends);
+  const setNearbyFriends = useUserStore((state) => state.setNearbyFriends);
+
+  useEffect(() => {
+    (async () => {
+      const friends = await getAllFriends(email);
+      const location = await getLocation(email);
+      const nearbyFriends = await findNearbyFriends(friends, location, radius);
+      setAllFriends(friends);
+      setLocation(location);
+      setNearbyFriends(nearbyFriends);
+    })();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello {username[0]}</Text>
+      <Text style={styles.title}>Hello {user}</Text>
       <Link href="/map" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText} numberOfLines={2}>
@@ -49,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   title: {
-    fontSize: 50,
+    fontSize: 40,
     margin: 20,
   },
 });
