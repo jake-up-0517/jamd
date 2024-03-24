@@ -35,6 +35,16 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="search" color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
       <Tabs.Screen name="[friend]" options={{ href: null }} />
     </Tabs>
   );

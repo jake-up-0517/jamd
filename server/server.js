@@ -6,6 +6,8 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 
+// import data from '../utils/data.js';
+
 import router from './routers/apiRouter.js';
 
 export const db = new sqlite3.Database('./db.db', (err) => {
@@ -14,6 +16,33 @@ export const db = new sqlite3.Database('./db.db', (err) => {
   }
   console.log('Connected to SQlite!');
 });
+
+// const insert = (arr) => {
+//   const result = [];
+//   const maxLat = 30.5;
+//   const minLat = 29.5;
+//   const maxLong = -97.5;
+//   const minLong = -98.5;
+//   arr.forEach((el) => {
+//     const obj = {
+//       id: el.id,
+//       first_name: el.first_name,
+//       last_name: el.last_name,
+//       email: el.email,
+//       latitude: Math.random() * (maxLat - minLat) + minLat,
+//       longitude: Math.random() * (maxLong - minLong) + minLong,
+//     };
+//     result.push(obj);
+//   });
+//   return result;
+// };
+
+// insert(data).forEach((el) => {
+//   db.run(
+//     'INSERT INTO users (first_name, last_name, email, latitude, longitude) VALUES (?, ?, ?, ?, ?)',
+//     [el.first_name, el.last_name, el.email, el.latitude, el.longitude]
+//   );
+// });
 
 const mongoConnection = async () => {
   try {

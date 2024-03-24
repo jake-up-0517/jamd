@@ -8,13 +8,13 @@ const userController = {
     try {
       res.locals.name = await new Promise((resolve, reject) => {
         db.all(
-          'SELECT first_name, last_name FROM users WHERE email = ?',
+          'SELECT first_name, last_name, id FROM users WHERE email = ?',
           [email],
           (err, rows) => {
             if (err) {
               reject(err);
             }
-            resolve([rows[0].first_name, rows[0].last_name]);
+            resolve([rows[0].first_name, rows[0].last_name, rows[0].id]);
           }
         );
       });
@@ -67,6 +67,26 @@ const userController = {
       );
     } catch (err) {
       console.log('Error in updateLocation: ', err);
+    }
+    return next();
+  },
+  getUsers: async (req, res, next) => {
+    const { filter } = req.body;
+    try {
+      res.locals.users = await new Promise((resolve, reject) => {
+        db.all(
+          'SELECT * FROM users WHERE first_name LIKE ? OR last_name LIKE ?',
+          [`${filter}%`, `${filter}%`],
+          (err, rows) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(rows);
+          }
+        );
+      });
+    } catch (err) {
+      console.log(err);
     }
     return next();
   },
