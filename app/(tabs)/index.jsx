@@ -34,14 +34,7 @@ export default function Home() {
       <Link href="/map" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText} numberOfLines={2}>
-            In a Jam?{'\n'}See who can help!
-          </Text>
-        </TouchableOpacity>
-      </Link>
-      <Link Link push href={`/Jarod Crawford`} asChild>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText} numberOfLines={2}>
-            Chat
+            In a Jam?{'\n'}See who's nearby!
           </Text>
         </TouchableOpacity>
       </Link>
@@ -64,7 +57,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 5,
     margin: 10,
-    width: 200,
+    width: 250,
   },
   buttonText: {
     textAlign: 'center',

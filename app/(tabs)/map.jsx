@@ -13,10 +13,17 @@ export default function Map() {
   const allFriends = useUserStore((state) => state.allFriends);
   const nearbyFriends = useUserStore((state) => state.nearbyFriends);
   const setRadius = useLocationStore((state) => state.setRadius);
+  const setNearbyFriends = useUserStore((state) => state.setNearbyFriends);
 
   useEffect(() => {
-    console.log(radius);
-    findNearbyFriends(allFriends, location, radius);
+    (async () => {
+      const nearbyFriends = await findNearbyFriends(
+        allFriends,
+        location,
+        radius
+      );
+      setNearbyFriends(nearbyFriends);
+    })();
   }, [location, radius]);
 
   if (!location) {

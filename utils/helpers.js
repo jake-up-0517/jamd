@@ -112,7 +112,7 @@ function degToRad(deg) {
 
 export function adjustRadius(action, radius) {
   // console.log(action, radius);
-  if (action === 'increase' && radius < 8045) {
+  if (action === 'increase' && radius < 100000000000) {
     const radi = radius + 1609;
     return radi;
   } else if (action === 'decrease' && radius > 1609) {
