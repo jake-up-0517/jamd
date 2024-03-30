@@ -20,4 +20,8 @@ userRouter.post(
   }
 );
 
+userRouter.post('/getusers', userController.getUsers, (req, res) => {
+  res.status(200).json(res.locals.users);
+});
+
 export default userRouter;

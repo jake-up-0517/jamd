@@ -19,6 +19,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const setUser = useUserStore((state) => state.setUser);
   const setUserEmail = useUserStore((state) => state.setUserEmail);
+  const setUserId = useUserStore((state) => state.setUserId);
 
   const handleLogin = async () => {
     try {
@@ -37,6 +38,7 @@ export default function Login() {
         const data = await response.json();
         console.log('name', data);
         setUser(data[0] + ' ' + data[1]);
+        setUserId(data[2]);
         setUserEmail(email);
         router.replace('/(tabs)/home');
       }
