@@ -38,7 +38,7 @@ export default function Login() {
         console.log('name', data);
         setUser(data[0] + ' ' + data[1]);
         setUserEmail(email);
-        router.replace('/(tabs)');
+        router.replace('/(tabs)/home');
       }
     } catch (error) {
       setError(true);

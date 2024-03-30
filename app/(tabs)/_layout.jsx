@@ -1,12 +1,16 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
+import { auth } from '../../firebaseConfig';
 
 export default function TabLayout() {
+  if (!auth.currentUser) {
+    router.replace('/');
+  }
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
@@ -31,6 +35,16 @@ export default function TabLayout() {
           title: 'Chat',
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="comment" color={color} />
+          ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="gear" color={color} />
           ),
           headerShown: false,
         }}

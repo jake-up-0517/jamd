@@ -5,5 +5,5 @@ export default function Root() {
 }
 
 // export const unstable_settings = {
-//   initialRouteName: 'index',
+//   initialRouteName: 'signin',
 // };

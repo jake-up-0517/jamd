@@ -20,7 +20,7 @@ export default function Login() {
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState(null);
   const setUser = useUserStore((state) => state.setUser);
-  const setUserEmail = userUseStore((state) => state.setUserEmail);
+  const setUserEmail = useUserStore((state) => state.setUserEmail);
 
   const handleSignUp = async () => {
     try {
@@ -40,7 +40,7 @@ export default function Login() {
         console.log('name', data);
         setUser(data[0] + ' ' + data[1]);
         setUserEmail(email);
-        router.replace('/(tabs)');
+        router.replace('/(tabs)/home');
       }
     } catch (error) {
       // setError(true);
