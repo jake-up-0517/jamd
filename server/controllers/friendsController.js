@@ -7,7 +7,7 @@ const friendsController = {
     try {
       res.locals.friends = await new Promise((resolve, reject) => {
         db.all(
-          'SELECT u2.first_name, u2.last_name, u2.latitude, u2.longitude FROM friends JOIN users u1 ON u1.id = friends.user_id1 JOIN users u2 ON u2.id = friends.user_id2 WHERE u1.email = ?',
+          'SELECT u2.id, u2.first_name, u2.last_name, u2.latitude, u2.longitude FROM friends JOIN users u1 ON u1.id = friends.user_id1 JOIN users u2 ON u2.id = friends.user_id2 WHERE u1.email = ?',
           [email],
           (err, rows) => {
             if (err) {
@@ -37,7 +37,7 @@ const friendsController = {
           }
         );
         db.all(
-          'SELECT u2.first_name, u2.last_name FROM friends JOIN users u1 ON u1.id = friends.user_id1 JOIN users u2 ON u2.id = friends.user_id2 WHERE u1.id = ? AND u2.id = ?',
+          'SELECT u2.first_name, u2.last_name, u2.longitude, u2.latitude, u2.id FROM friends JOIN users u1 ON u1.id = friends.user_id1 JOIN users u2 ON u2.id = friends.user_id2 WHERE u1.id = ? AND u2.id = ?',
           [userId, friendId],
           (err, rows) => {
             if (err) {

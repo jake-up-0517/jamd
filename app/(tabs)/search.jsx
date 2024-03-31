@@ -18,6 +18,8 @@ export default function Search() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const userId = useUserStore((state) => state.id);
+  const allFriends = useUserStore((state) => state.allFriends);
+  const setAllFriends = useUserStore((state) => state.setAllFriends);
 
   const userSearch = async (filter) => {
     try {
@@ -65,6 +67,7 @@ export default function Search() {
       }
       const friend = await response.json();
       console.log('friend:', friend);
+      setAllFriends([...allFriends, friend[0]]);
     } catch (err) {
       console.log('Error:', err);
     }

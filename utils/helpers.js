@@ -77,6 +77,7 @@ export const getAllFriends = async (email) => {
 export const findNearbyFriends = (allFriends, location, radius) => {
   const nearbyFriends = [];
   allFriends.forEach((friend) => {
+    // console.log('friend:', friend.first_name, friend.last_name);
     let distance = getDistanceFromUser(
       location.coords.latitude,
       location.coords.longitude,
@@ -84,10 +85,10 @@ export const findNearbyFriends = (allFriends, location, radius) => {
       friend.longitude
     );
     if (distance <= radius) {
+      // console.log('nearby friend:', friend.first_name, friend.last_name);
       nearbyFriends.push(friend);
     }
   });
-  console.log('nearbyFriends:', nearbyFriends);
   return nearbyFriends;
 };
 

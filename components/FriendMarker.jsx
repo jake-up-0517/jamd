@@ -6,7 +6,6 @@ export default function FriendMarker({ friend }) {
   const fullName = `${friend.first_name} ${friend.last_name}`;
   return (
     <Marker
-      key={friend.last_name}
       coordinate={{
         latitude: friend.latitude,
         longitude: friend.longitude,

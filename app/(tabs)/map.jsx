@@ -24,7 +24,7 @@ export default function Map() {
       );
       setNearbyFriends(nearbyFriends);
     })();
-  }, [location, radius]);
+  }, [location, radius, allFriends]);
 
   if (!location) {
     return (
@@ -56,7 +56,7 @@ export default function Map() {
           strokeColor="rgba(0, 0, 255, 0.5)"
         />
         {nearbyFriends.map((friend) => {
-          return <FriendMarker key={friend.first_name} friend={friend} />;
+          return <FriendMarker key={friend.id} friend={friend} />;
         })}
       </MapView>
       <View style={styles.radiusButtonContainer}>
